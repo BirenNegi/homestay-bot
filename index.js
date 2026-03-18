@@ -125,7 +125,7 @@ async function askAI(question) {
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'meta-llama/llama-3.2-3b-instruct:free',
+        model: 'mistralai/mistral-7b-instruct:free',
         messages: [
           { role: 'system', content: HOMESTAY_INFO },
           { role: 'user', content: question }
