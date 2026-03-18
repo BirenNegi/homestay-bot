@@ -60,7 +60,7 @@ app.post('/webhook', async (req, res) => {
     );
   } else {
     await sendMessage(from,
-      "Welcome to [Your Homestay Name]!\n\nType:\n" +
+      "Welcome to mountaincoworkingstay!\n\nType:\n" +
       "*book* - check availability\n" +
       "*price* - see our rates\n" +
       "*pay* - make a payment\n" +
