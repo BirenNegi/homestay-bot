@@ -171,6 +171,6 @@ app.listen(PORT, () => console.log(`Bot running on port ${PORT}`));
 
 In the `HOMESTAY_INFO` section at the top, fill in your real details:
 ```
-- Location: Sarainkhet, Almora, Uttrkahnd        ← add your real address
-- Amenities: WiFi, breakfast, parking  ← edit to match your homestay
-- Contact: ph: 8130979874 Email: Negiveer227@gmail.com          ← add your contact
+- Location: [Sarainkhet, Almora, Uttrkahnd]        ← add your real address
+- Amenities: [WiFi, breakfast, parking]  ← edit to match your homestay
+- Contact: [ph: 8130979874 Email: Negiveer227@gmail.com]          ← add your contact
