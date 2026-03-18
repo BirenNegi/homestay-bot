@@ -12,20 +12,20 @@ const razorpay = new Razorpay({
 });
 
 const HOMESTAY_INFO = `
-You are a helpful assistant for Mountain Coworking Stay, a homestay in India.
+You are a helpful assistant for Mountain Coworking Stay, a homestay in Sarainkhet, Almora, Uttarakhand, India.
 Answer guest questions in a friendly, short and helpful way.
 Always reply in the same language the guest uses.
 
 Key information:
 - Rooms: Standard (Rs.1500/night), Deluxe (Rs.2200/night), Family Suite (Rs.3000/night)
 - Check-in: 12 PM noon, Check-out: 11 AM
-- Location: [Your address here]
-- Amenities: WiFi, breakfast, parking [edit this]
-- Contact: [Your phone/email]
+- Location: Sarainkhet, Almora, Uttarakhand
+- Amenities: WiFi, breakfast, parking
+- Contact: Phone 8130979874, Email Negiveer227@gmail.com
 
 Keep replies under 3-4 lines. Friendly and helpful tone.
 If asked about booking or payment, tell them to type *book* or *pay*.
-If asked something you do not know, ask them to call directly.
+If asked something you do not know, ask them to call directly on 8130979874.
 `;
 
 app.get('/webhook', (req, res) => {
@@ -60,12 +60,12 @@ app.post('/webhook', async (req, res) => {
         await sendMessage(from,
           "To confirm your booking, pay the advance here:\n\n" +
           paymentLink.short_url +
-          "\n\nOnce paid you will receive a confirmation. Type *help* for assistance."
+          "\n\nOnce paid you will receive a confirmation."
         );
       } catch (err) {
         console.log('Razorpay error:', err.message);
         await sendMessage(from,
-          "Sorry, payment link could not be generated right now. Please call us directly."
+          "Sorry, payment link could not be generated right now. Please call us on 8130979874."
         );
       }
 
@@ -91,23 +91,23 @@ app.post('/webhook', async (req, res) => {
       await sendMessage(from,
         "Check-in: 12:00 PM noon\n" +
         "Check-out: 11:00 AM\n\n" +
-        "Address: [Your address]\n" +
-        "Google Maps: [Your link]"
+        "Location: Sarainkhet, Almora, Uttarakhand\n" +
+        "For directions call: 8130979874"
       );
 
-    } else if (text.includes('hi') || text.includes('hello') || text.includes('hey') || text === 'start') {
+    } else if (text === 'hi' || text === 'hello' || text === 'hey' || text === 'start' || text.includes('namaste')) {
       await sendMessage(from,
-        "Welcome to Mountain Coworking Stay!\n\n" +
+        "Welcome to Mountain Coworking Stay!\n" +
+        "Sarainkhet, Almora, Uttarakhand\n\n" +
         "Type:\n" +
-        "*price* - see our room rates\n" +
+        "*price* - room rates\n" +
         "*book* - check availability\n" +
         "*pay* - make a payment\n" +
-        "*checkin* - check-in info\n\n" +
+        "*checkin* - timing and location\n\n" +
         "Or just ask me anything!"
       );
 
     } else {
-      // AI handles all other questions
       console.log('Sending to Gemini AI:', text);
       const aiReply = await askGemini(text);
       await sendMessage(from, aiReply);
@@ -163,14 +163,3 @@ async function sendMessage(to, text) {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Bot running on port ${PORT}`));
-```
-
----
-
-## What to update before pushing
-
-In the `HOMESTAY_INFO` section at the top, fill in your real details:
-```
-- Location: [Sarainkhet, Almora, Uttrkahnd]        ← add your real address
-- Amenities: [WiFi, breakfast, parking]  ← edit to match your homestay
-- Contact: [ph: 8130979874 Email: Negiveer227@gmail.com]          ← add your contact
