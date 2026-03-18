@@ -11,7 +11,6 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// Webhook verification (Meta requires this)
 app.get('/webhook', (req, res) => {
   if (req.query['hub.verify_token'] === process.env.VERIFY_TOKEN) {
     res.send(req.query['hub.challenge']);
@@ -20,7 +19,6 @@ app.get('/webhook', (req, res) => {
   }
 });
 
-// Receive messages
 app.post('/webhook', async (req, res) => {
   const msg = req.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
   if (!msg) return res.sendStatus(200);
@@ -37,26 +35,23 @@ app.post('/webhook', async (req, res) => {
   } else if (text.includes('price') || text.includes('rate')) {
     await sendMessage(from,
       "Our rates:\n\n" +
-      "Standard Room: ₹1500/night\n" +
-      "Deluxe Room: ₹2200/night\n" +
-      "Family Suite: ₹3000/night\n\n" +
+      "Standard Room: Rs.1500/night\n" +
+      "Deluxe Room: Rs.2200/night\n" +
+      "Family Suite: Rs.3000/night\n\n" +
       "Type *pay* to make a booking payment."
     );
   } else if (text.includes('pay')) {
-    // Create Razorpay payment link
     const paymentLink = await razorpay.paymentLink.create({
-      amount: 150000, // ₹1500 in paise (adjust per booking)
+      amount: 150000,
       currency: 'INR',
       description: 'Homestay Booking Advance',
       notify: { sms: false, email: false },
       reminder_enable: false,
-      callback_url: 'https://yourdomain.com/payment-success',
-      callback_method: 'get',
     });
-
     await sendMessage(from,
-      `To confirm your booking, pay the advance here:\n\n${paymentLink.short_url}\n\n` +
-      "Once payment is done, you'll receive a confirmation. Questions? Type *help*."
+      "To confirm your booking, pay the advance here:\n\n" +
+      paymentLink.short_url +
+      "\n\nOnce paid, you will receive a confirmation. Type *help* for assistance."
     );
   } else if (text.includes('checkin') || text.includes('check-in')) {
     await sendMessage(from,
@@ -66,11 +61,11 @@ app.post('/webhook', async (req, res) => {
   } else {
     await sendMessage(from,
       "Welcome to [Your Homestay Name]!\n\nType:\n" +
-      "*book* — check availability\n" +
-      "*price* — see our rates\n" +
-      "*pay* — make a payment\n" +
-      "*checkin* — check-in info\n" +
-      "*help* — talk to us directly"
+      "*book* - check availability\n" +
+      "*price* - see our rates\n" +
+      "*pay* - make a payment\n" +
+      "*checkin* - check-in info\n" +
+      "*help* - talk to us directly"
     );
   }
 
@@ -86,12 +81,4 @@ async function sendMessage(to, text) {
 }
 
 app.listen(3000, () => console.log('Bot running on port 3000'));
-```
 
-**Step 4 — Create `.env` file** (never share this):
-```
-WA_TOKEN=your_whatsapp_token_here
-PHONE_NUMBER_ID=your_phone_number_id
-VERIFY_TOKEN=any_random_string_you_choose
-RAZORPAY_KEY_ID=rzp_test_xxxxxxxx
-RAZORPAY_KEY_SECRET=your_secret_here
