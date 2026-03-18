@@ -108,8 +108,8 @@ app.post('/webhook', async (req, res) => {
       );
 
     } else {
-      console.log('Sending to Gemini AI:', text);
-      const aiReply = await askGemini(text);
+      console.log('Sending to AI:', text);
+      const aiReply = await askAI(text);
       await sendMessage(from, aiReply);
     }
 
@@ -120,23 +120,29 @@ app.post('/webhook', async (req, res) => {
   res.sendStatus(200);
 });
 
-async function askGemini(question) {
+async function askAI(question) {
   try {
     const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      'https://openrouter.ai/api/v1/chat/completions',
       {
-        contents: [{
-          parts: [{
-            text: HOMESTAY_INFO + '\n\nGuest asks: ' + question
-          }]
-        }]
+        model: 'meta-llama/llama-3.2-3b-instruct:free',
+        messages: [
+          { role: 'system', content: HOMESTAY_INFO },
+          { role: 'user', content: question }
+        ]
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json'
+        }
       }
     );
-    const reply = response.data.candidates[0].content.parts[0].text;
-    console.log('Gemini reply:', reply);
+    const reply = response.data.choices[0].message.content;
+    console.log('AI reply:', reply);
     return reply;
   } catch (err) {
-    console.log('Gemini error:', err.response?.data || err.message);
+    console.log('AI error:', err.response?.data || err.message);
     return "Sorry, I could not understand that. Please type *price*, *book*, *pay*, or *checkin* for quick help.";
   }
 }
